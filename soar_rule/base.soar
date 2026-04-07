@@ -1,0 +1,29 @@
+# 엘리베이터 & 명단 복사 공사
+sp {elaborate*top-state*top-state
+   (state <s> ^superstate nil) 
+-->
+   (<s> ^top-state <s>)
+}
+
+sp {elaborate*state*top-state
+   (state <s> ^superstate.top-state <ts>) 
+-->
+   (<s> ^top-state <ts>)
+}
+
+# 윗방의 item을 내 방으로 무조건 복사
+sp {elaborate*state*item*down
+   (state <s> ^superstate.item <i>)
+-->
+   (<s> ^item <i>)
+}
+
+# 1등 정해졌을 때 Python으로 쏘는 룰
+sp {apply*recommend-cafe*send-to-python
+   (state <s> ^operator <o>
+              ^io.output-link <ol>)
+   (<o> ^name recommend-cafe
+        ^cafe-name <c-name>)
+-->
+   (<ol> ^final-recommendation <c-name>)
+}

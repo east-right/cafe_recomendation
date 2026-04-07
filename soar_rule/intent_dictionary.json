@@ -1,0 +1,98 @@
+{
+    "공부": [
+        {
+            "topic": "매장",
+            "property": "공부"
+        },
+        {
+            "topic": "공간",
+            "property": "공부"
+        },
+        {
+            "topic": "매장",
+            "property": "카공"
+        },
+        {
+            "topic": "매장",
+            "property": "공부"
+        },
+        {
+            "topic": "콘센트",
+            "property": "많"
+        },
+        {
+            "topic": "분위기",
+            "property": "카공"
+        },
+        {
+            "topic": "매장",
+            "property": "조용"
+        }
+    ],
+    "카공": [
+        {
+            "topic": "매장",
+            "property": "카공"
+        },
+        {
+            "topic": "분위기",
+            "property": "카공"
+        },
+        {
+            "topic": "콘센트",
+            "property": "많"
+        },
+        {
+            "topic": "공간",
+            "property": "공부"
+        },
+        {
+            "topic": "공간",
+            "property": "노트북하"
+        },
+        {
+            "topic": "공간",
+            "property": "집중"
+        },
+        {
+            "topic": "매장",
+            "property": "공부"
+        },
+        {
+            "topic": "공간",
+            "property": "작업"
+        }
+    ],
+    "데이트": [
+        {
+            "topic": "공간",
+            "property": "프라이빗"
+        }
+    ],
+    "주차장이 넓은 카페": [
+        {
+            "topic": "가게",
+            "property": "넓"
+        },
+        {
+            "topic": "매장",
+            "property": "넓"
+        },
+        {
+            "topic": "공간",
+            "property": "넓"
+        },
+        {
+            "topic": "공간",
+            "property": "널찍"
+        },
+        {
+            "topic": "매장",
+            "property": "크"
+        },
+        {
+            "topic": "매장",
+            "property": "편리"
+        }
+    ]
+}

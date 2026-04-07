@@ -1,0 +1,14 @@
+# 가상환경 (Virtual Environments)
+venv/
+.venv/
+env/
+bin/
+lib64/
+
+# 파이썬 캐시 파일
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 환경변수 및 보안 설정
+.env

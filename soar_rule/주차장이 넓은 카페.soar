@@ -1,0 +1,143 @@
+# 엘리베이터 & 명단 복사 공사
+sp {elaborate*top-state*top-state
+   (state <s> ^superstate nil) 
+-->
+   (<s> ^top-state <s>)
+}
+
+sp {elaborate*state*top-state
+   (state <s> ^superstate.top-state <ts>) 
+-->
+   (<s> ^top-state <ts>)
+}
+
+# 윗방의 item을 내 방으로 무조건 복사
+sp {elaborate*state*item*down
+   (state <s> ^superstate.item <i>)
+-->
+   (<s> ^item <i>)
+}
+
+# 1등 정해졌을 때 Python으로 쏘는 룰
+sp {apply*recommend-cafe*send-to-python
+   (state <s> ^operator <o>
+              ^io.output-link <ol>)
+   (<o> ^name recommend-cafe
+        ^cafe-name <c-name>)
+-->
+   (<ol> ^final-recommendation <c-name>)
+}
+
+sp {elaborate*candidate*1
+   (state <s> ^io.input-link <il>)
+   (<il> ^cafe <c>)
+   (<c> ^name <c-name> ^feature <f> )
+   (<f> ^topic |가게| ^property |넓|)
+-->
+   (<s> ^candidate <c-name>)
+}
+
+sp {elaborate*candidate*2
+   (state <s> ^io.input-link <il>)
+   (<il> ^cafe <c>)
+   (<c> ^name <c-name> ^feature <f> )
+   (<f> ^topic |매장| ^property |넓|)
+-->
+   (<s> ^candidate <c-name>)
+}
+
+sp {elaborate*candidate*3
+   (state <s> ^io.input-link <il>)
+   (<il> ^cafe <c>)
+   (<c> ^name <c-name> ^feature <f> )
+   (<f> ^topic |공간| ^property |넓|)
+-->
+   (<s> ^candidate <c-name>)
+}
+
+sp {elaborate*candidate*4
+   (state <s> ^io.input-link <il>)
+   (<il> ^cafe <c>)
+   (<c> ^name <c-name> ^feature <f> )
+   (<f> ^topic |공간| ^property |널찍|)
+-->
+   (<s> ^candidate <c-name>)
+}
+
+sp {elaborate*candidate*5
+   (state <s> ^io.input-link <il>)
+   (<il> ^cafe <c>)
+   (<c> ^name <c-name> ^feature <f> )
+   (<f> ^topic |매장| ^property |크|)
+-->
+   (<s> ^candidate <c-name>)
+}
+
+# 수집한 후보들 +로 등록
+sp {recommend*OPERATOR*propose
+   (state <s> ^candidate <c-name>)
+-->
+   (<s> ^operator <o> +)
+   (<o> ^name recommend-cafe ^cafe-name <c-name>)
+}
+
+
+# 1차 심사 (S1) - 기본 제안 & 가게/넓
+sp {recommend*S1*judge
+   (state <s> ^operator <o1> +
+              ^operator <o2> +
+              ^io.input-link <il>)
+   (<o1> ^name recommend-cafe ^cafe-name <c1-name>)
+   (<o2> ^name recommend-cafe ^cafe-name <c2-name> <> <c1-name>)
+   (<il> ^cafe <c1> ^cafe <c2>)
+   (<c1> ^name <c1-name> ^feature <f1>)
+   (<f1> ^topic |가게| ^property |넓|)
+   (<c2> ^name <c2-name>)
+   - { (<c2> ^feature <f2>) (<f2> ^topic |가게| ^property |넓|) }
+-->
+   (<s> ^operator <o1> > <o2>)
+}
+
+# 2차 심사 (S2) - 매장/편리
+sp {resolve*tie*S2*judge
+   (state <s> ^impasse <any-impasse> 
+              ^superstate <s1>
+              ^item <o1> ^item <o2>
+              ^top-state <ts>)
+   (<s1> ^superstate nil)
+
+   (<o1> ^name recommend-cafe ^cafe-name <c1-name>)
+   (<o2> ^name recommend-cafe ^cafe-name <c2-name> <> <c1-name>)
+   (<ts> ^io.input-link <il>)
+   (<il> ^cafe <c1> ^cafe <c2>)
+
+   (<c1> ^name <c1-name> ^feature <f1>)
+   (<f1> ^topic |매장| ^property |편리|)
+   (<c2> ^name <c2-name>)
+   - { (<c2> ^feature <f2>) (<f2> ^topic |매장| ^property |편리|) }
+-->
+   (<s1> ^operator <o1> > <o2>)
+}
+
+# LLM 호출
+sp {resolve*tie*S3*ask-llm
+   # state 확인 밑 정리
+   (state <s> ^impasse <any-impasse>
+              ^superstate <s2>
+              ^item <o1> ^item <o2> 
+              ^top-state <ts>)
+   (<s2> ^superstate <s1>)
+   (<s1> ^superstate nil)
+
+   (<o1> ^cafe-name <c1-name>)
+   (<o2> ^cafe-name { <c2-name> > <c1-name> }) 
+
+   # 2. 1층 우편함 확인
+   (<ts> ^io.output-link <ol>)
+-->
+   # 3. 파이썬으로 최종 SOS 발사
+   (<ol> ^ask-llm <req>)
+   (<req> ^cand1 <c1-name>
+          ^cand2 <c2-name>
+          ^stopped-depth 3)
+}
